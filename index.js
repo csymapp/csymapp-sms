@@ -38,7 +38,7 @@ async function sendMessage(topic, message) {
                             numSent++
                             exec(`echo ${numSent} > .log`,
                                 (error, stdout, stderr) => {})
-                            client.publish(`${process.env.MY_NUMBER}`, `${numSent}`)
+                            client.publish(`csymapp-sms-monitor/${process.env.MY_NUMBER}`, `${numSent}`)
                         }
                     })
             }

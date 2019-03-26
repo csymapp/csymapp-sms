@@ -1,0 +1,30 @@
+{
+  "name": "csymapp-sms",
+  "version": "1.0.0",
+  "description": "csymapp-sms using termux",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "mqtt": "^2.18.8",
+    "phone": "^2.3.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csymapp/csymapp-sms.git"
+  },
+  "keywords": [
+    "sms",
+    "termux",
+    "csymapp-sms"
+  ],
+  "author": "Brian Onang'o",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/csymapp/csymapp-sms/issues"
+  },
+  "homepage": "https://github.com/csymapp/csymapp-sms#readme"
+}

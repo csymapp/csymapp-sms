@@ -29,7 +29,7 @@ async function sendMessage(topic, message) {
                 // console.log(`exec error: ${error}`);
             } else {
                 let numSent = parseInt(stdout)
-                console.log(numSent)
+                console.log(`${numSent}->${isValidPhone[0]}:${message}`)
                 exec(`termux-sms-send -n ${isValidPhone[0]} ${message}`,
                     (error, stdout, stderr) => {
                         if (error !== null) {
@@ -46,8 +46,6 @@ async function sendMessage(topic, message) {
 }
 
 client.on('message', function (topic, message, packet) {
-    console.log("message is " + message);
-    console.log("topic is " + topic);
     sendMessage(topic, message)
 });
 

@@ -67,7 +67,7 @@ async function sendMessage() {
 }
 
 client.on('message', function (topic, message, packet) {
-    sendMessage(topic, message)
+    addtoQueue(topic, message)
 });
 
 client.subscribe("csymapp-sms/#", {

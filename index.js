@@ -1,7 +1,9 @@
 const mqtt = require("mqtt"),
     dotenv = require('dotenv').config(),
     exec = require('child_process').exec,
-    phone = require("phone")
+    phone = require("phone"),
+    EventEmitter = require('events'),
+    emitter = new EventEmitter();
 
 
 let client = mqtt.connect(process.env.BROKER, {
@@ -17,11 +19,28 @@ client.on("error", function (error) {
     console.log("Can't connect" + error);
 })
 
-async function sendMessage(topic, message) {
+let processingQueue = false;
+let queueItems = [];
+
+
+async function addtoQueue(topic, message) {
     let phoneNumber = '+' + topic.split("/")[1],
         isValidPhone = phone(phoneNumber)
     if (!(isValidPhone.length)) return;
     message = decodeURIComponent(message);
+    queueItems.push(`termux-sms-send -n ${isValidPhone[0]} ${message}`)
+    sendMessage()
+}
+
+async function sendMessage() {
+    if(processingQueue) return;
+    processingQueue = true;
+    // let phoneNumber = '+' + topic.split("/")[1],
+    //     isValidPhone = phone(phoneNumber)
+    // if (!(isValidPhone.length)) return;
+    // message = decodeURIComponent(message);
+    if(!(queueItems.length))return;
+    let queueItem = queueItems.shift();
 
     exec('cat .log',
         (error, stdout, stderr) => {
@@ -29,8 +48,8 @@ async function sendMessage(topic, message) {
                 // console.log(`exec error: ${error}`);
             } else {
                 let numSent = parseInt(stdout)
-                console.log(`${numSent}->${isValidPhone[0]}:${message}`)
-                exec(`termux-sms-send -n ${isValidPhone[0]} ${message}`,
+                console.log(`${numSent}->${queueItem}`)
+                exec(`${queueItem}`,
                     (error, stdout, stderr) => {
                         if (error !== null) {
                             // console.log(`exec error: ${error}`);
@@ -40,6 +59,8 @@ async function sendMessage(topic, message) {
                                 (error, stdout, stderr) => {})
                             client.publish(`csymapp-sms-monitor/${process.env.MY_NUMBER}`, `${numSent}`)
                         }
+                        processingQueue = false;
+                        emitter.emit('doneSending')
                     })
             }
         })
@@ -52,3 +73,7 @@ client.on('message', function (topic, message, packet) {
 client.subscribe("csymapp-sms/#", {
     qos: 1
 });
+
+emitter.on('doneSending', function(){
+    sendMessage();
+})

@@ -40,6 +40,7 @@ async function sendMessage() {
     // if (!(isValidPhone.length)) return;
     // message = decodeURIComponent(message);
     if(!(queueItems.length))return;
+    processingQueue = true;
     let queueItem = queueItems.shift();
 
     exec('cat .log',

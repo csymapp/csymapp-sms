@@ -34,7 +34,7 @@ async function addtoQueue(topic, message) {
 
 async function sendMessage() {
     if(processingQueue) return;
-    processingQueue = true;
+    // processingQueue = true;
     // let phoneNumber = '+' + topic.split("/")[1],
     //     isValidPhone = phone(phoneNumber)
     // if (!(isValidPhone.length)) return;
